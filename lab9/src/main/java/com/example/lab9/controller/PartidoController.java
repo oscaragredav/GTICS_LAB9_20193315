@@ -26,15 +26,21 @@ public class PartidoController {
         this.historialPartidoRepository = historialPartidoRepository;
     }
 
-    @PostMapping(value = {"/registro"})
-    public ResponseEntity<HashMap<String, Object>> guardarDeporte(
+
+    @GetMapping(value = {"/", ""})
+    public List<Partido> lista() {
+        return partidoRepository.findAll();
+    }
+
+    //crear
+    @PostMapping({"/registro","/registro/"})
+    public ResponseEntity<HashMap<String, Object>> guardarPartido(
             @RequestBody Partido partido,
             @RequestParam(value = "fetchId", required = false) boolean fetchId) {
 
         HashMap<String, Object> responseJson = new HashMap<>();
 
         partidoRepository.save(partido);
-
         if (fetchId) {
             responseJson.put("id", partido.getId());
         }
