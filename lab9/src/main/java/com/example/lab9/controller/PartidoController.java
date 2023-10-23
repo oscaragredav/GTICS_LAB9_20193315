@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/partido")
@@ -50,6 +51,28 @@ public class PartidoController {
     }
 
 
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<HashMap<String, Object>> buscarPartido(@PathVariable("id") String idStr) {
+
+
+        try {
+            int id = Integer.parseInt(idStr);
+            Optional<Partido> byId = partidoRepository.findById(id);
+
+            HashMap<String, Object> respuesta = new HashMap<>();
+
+            if (byId.isPresent()) {
+                respuesta.put("result", "ok");
+                respuesta.put("producto", byId.get());
+            } else {
+                respuesta.put("result", "no existe");
+            }
+            return ResponseEntity.ok(respuesta);
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
 
 
 }
