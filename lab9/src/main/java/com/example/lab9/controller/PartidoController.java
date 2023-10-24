@@ -1,9 +1,9 @@
 package com.example.lab9.controller;
 
 
-import com.example.lab9.entity.Historialpartido;
+import com.example.lab9.entity.Historialpartidos;
 import com.example.lab9.entity.Partido;
-import com.example.lab9.repository.HistorialpartidoRepository;
+import com.example.lab9.repository.HistorialpartidosRepository;
 import com.example.lab9.repository.PartidoRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +17,9 @@ import java.util.List;
 public class PartidoController {
 
     final PartidoRepository partidoRepository;
-    final HistorialpartidoRepository historialPartidoRepository;
+    final HistorialpartidosRepository historialPartidoRepository;
 
-    public PartidoController(PartidoRepository partidoRepository, HistorialpartidoRepository historialPartidoRepository) {
+    public PartidoController(PartidoRepository partidoRepository, HistorialpartidosRepository historialPartidoRepository) {
         this.partidoRepository = partidoRepository;
 
         this.historialPartidoRepository = historialPartidoRepository;
@@ -51,9 +51,14 @@ public class PartidoController {
 
     // Listado de historial de productos
     @GetMapping(value = {"/gethistorialpartidos"})
-    public List<Historialpartido> listaPartidos() {
+    public List<Historialpartidos> listaPartidos() {
         return historialPartidoRepository.findAll();
     }
+
+//    @GetMapping(value = {"/getparticipantes"})
+//    public List<Object[]> listaParticipantes() {
+//        return historialPartidoRepository.participantesXPartido();
+//    }
 
 
 
