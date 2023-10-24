@@ -8,8 +8,10 @@ import com.example.lab9.repository.EquipoRepository;
 import com.example.lab9.repository.HistorialpartidosRepository;
 import com.example.lab9.repository.ParticipanteRepository;
 import com.example.lab9.repository.PartidoRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -119,11 +121,21 @@ public class PartidoController {
         }
     }
 
-
-    // Listado de historial de productos
     @GetMapping(value = {"/gethistorialpartidosSegundo"})
     public List<Historialpartidos> listaPartidos() {
         return historialPartidoRepository.findAll();
+    }
+
+
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<HashMap<String, String>> gestionException(HttpServletRequest request) {
+        HashMap<String, String> responseMap = new HashMap<>();
+        if (request.getMethod().equals("POST") || request.getMethod().equals("PUT")) {
+            responseMap.put("estado", "error");
+            responseMap.put("msg", "Debe enviar el contenido correctamente");
+        }
+        return ResponseEntity.badRequest().body(responseMap);
     }
 
 }
