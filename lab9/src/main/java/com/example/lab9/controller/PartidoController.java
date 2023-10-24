@@ -49,36 +49,40 @@ public class PartidoController {
     }
 
 
+    // EJERCICIO 2C
+    @GetMapping(value = "/gethistorialpartidos")
+    public ResponseEntity<?> buscarPartido(@RequestParam(name = "idequipo", required = false) String idequipo) {
+        if (idequipo != null) {
+            HashMap<String, Object> respuesta2 = new HashMap<>();
+            try {
+                int id = Integer.parseInt(idequipo);
+                Optional<Partido> byId = partidoRepository.findById(id);
 
-    // Listado de historial de productos
-    @GetMapping(value = {"/gethistorialpartidos"})
+                HashMap<String, Object> respuesta = new HashMap<>();
+
+                if (byId.isPresent()) {
+                    respuesta.put("result", "ok");
+                    respuesta.put("producto", byId.get());
+                } else {
+                    respuesta.put("result", "no existe");
+                }
+                return ResponseEntity.ok(respuesta);
+            } catch (NumberFormatException e) {
+                respuesta2.put("result", "error");
+                respuesta2.put("msg", "El ID ingresado es incorrecta");
+                return ResponseEntity.badRequest().body(respuesta2);
+            }
+        } else {
+            List<Historialpartido> historialPartidos = listaPartidos();
+            return ResponseEntity.ok(historialPartidos);
+        }
+    }
+
+    @GetMapping(value = {"/gethistorialpartidosSegundo"})
     public List<Historialpartido> listaPartidos() {
         return historialPartidoRepository.findAll();
     }
 
-
-
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<HashMap<String, Object>> buscarPartido(@PathVariable("id") String idStr) {
-
-
-        try {
-            int id = Integer.parseInt(idStr);
-            Optional<Partido> byId = partidoRepository.findById(id);
-
-            HashMap<String, Object> respuesta = new HashMap<>();
-
-            if (byId.isPresent()) {
-                respuesta.put("result", "ok");
-                respuesta.put("producto", byId.get());
-            } else {
-                respuesta.put("result", "no existe");
-            }
-            return ResponseEntity.ok(respuesta);
-        } catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().body(null);
-        }
-    }
 
 
 }
