@@ -56,7 +56,7 @@ public class EquipoController {
         HashMap<String, String> responseMap = new HashMap<>();
         if (request.getMethod().equals("POST") || request.getMethod().equals("PUT")) {
             responseMap.put("estado", "error");
-            responseMap.put("msg", "Debe enviar un producto");
+            responseMap.put("msg", "Debe enviar el contenido correctamente");
         }
         return ResponseEntity.badRequest().body(responseMap);
     }
