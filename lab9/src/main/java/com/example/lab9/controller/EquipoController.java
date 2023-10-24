@@ -45,12 +45,6 @@ public class EquipoController {
     }
 
 
-
-
-
-
-
-
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<HashMap<String, String>> gestionException(HttpServletRequest request) {
         HashMap<String, String> responseMap = new HashMap<>();

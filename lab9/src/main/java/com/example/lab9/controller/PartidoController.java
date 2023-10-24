@@ -2,8 +2,11 @@ package com.example.lab9.controller;
 
 
 import com.example.lab9.entity.Historialpartidos;
+import com.example.lab9.entity.Participante;
 import com.example.lab9.entity.Partido;
+import com.example.lab9.repository.EquipoRepository;
 import com.example.lab9.repository.HistorialpartidosRepository;
+import com.example.lab9.repository.ParticipanteRepository;
 import com.example.lab9.repository.PartidoRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,17 +23,22 @@ public class PartidoController {
     final PartidoRepository partidoRepository;
     final HistorialpartidosRepository historialPartidoRepository;
 
-    public PartidoController(PartidoRepository partidoRepository, HistorialpartidosRepository historialPartidoRepository) {
+    final ParticipanteRepository participanteRepository;
+    private final EquipoRepository equipoRepository;
+
+    public PartidoController(PartidoRepository partidoRepository, HistorialpartidosRepository historialPartidoRepository, ParticipanteRepository participanteRepository,
+                             EquipoRepository equipoRepository) {
         this.partidoRepository = partidoRepository;
-
         this.historialPartidoRepository = historialPartidoRepository;
+        this.participanteRepository = participanteRepository;
+        this.equipoRepository = equipoRepository;
     }
 
 
-    @GetMapping(value = {"/", ""})
-    public List<Partido> lista() {
-        return partidoRepository.findAll();
-    }
+//    @GetMapping(value = {"/", ""})
+//    public List<Partido> lista() {
+//        return partidoRepository.findAll();
+//    }
 
     //crear
     @PostMapping({"/registro","/registro/"})
@@ -46,6 +54,39 @@ public class PartidoController {
         }
         responseJson.put("estado", "creado");
         return ResponseEntity.status(HttpStatus.CREATED).body(responseJson);
+    }
+
+    // EJERCICIO 2B
+    @GetMapping(value = "/getparticipantes")
+    public ResponseEntity<?> buscarParticipante(@RequestParam(name = "idequipo", required = false) String idequipo) {
+        if (idequipo != null) {
+            HashMap<String, Object> respuesta2 = new HashMap<>();
+            try {
+                int id = Integer.parseInt(idequipo);
+                Optional<Participante> byId = participanteRepository.findById(id);
+                HashMap<String, Object> respuesta = new HashMap<>();
+
+                if (byId.isPresent()) {
+                    respuesta.put("result", "ok");
+                    respuesta.put("participante", byId.get());
+                } else {
+                    respuesta.put("result", "no existe");
+                }
+                return ResponseEntity.ok(respuesta);
+            } catch (NumberFormatException e) {
+                respuesta2.put("result", "error");
+                respuesta2.put("msg", "El ID ingresado es incorrecta");
+                return ResponseEntity.badRequest().body(respuesta2);
+            }
+        } else {
+            List<Participante> participante = listaParticipantes();
+            return ResponseEntity.ok(participante);
+        }
+    }
+
+    @GetMapping(value = {"/getparticipantesSegundo"})
+    public List<Participante> listaParticipantes() {
+        return participanteRepository.findAll();
     }
 
 
@@ -84,6 +125,5 @@ public class PartidoController {
     public List<Historialpartidos> listaPartidos() {
         return historialPartidoRepository.findAll();
     }
-
 
 }
